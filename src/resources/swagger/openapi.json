@@ -1,0 +1,363 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Gestão de Biblioteca Pessoal",
+    "description": "API REST para gerenciamento de biblioteca pessoal com autenticação JWT. Dados armazenados em memória (fins didáticos).",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "http://localhost:3000/api", "description": "Servidor local" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string" },
+          "data": { "type": "object", "nullable": true }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string" },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string" },
+              "details": { "type": "array", "items": { "type": "object" } }
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Book": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "userId": { "type": "string", "format": "uuid" },
+          "title": { "type": "string" },
+          "author": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["lido", "lendo", "abandonado", "emprestado", "quero ler"]
+          },
+          "rating": { "type": "integer", "minimum": 1, "maximum": 5, "nullable": true },
+          "isFavorite": { "type": "boolean" },
+          "review": { "type": "string", "maxLength": 1000, "nullable": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "WishlistItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "userId": { "type": "string", "format": "uuid" },
+          "title": { "type": "string" },
+          "author": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Cadastrar novo usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "username", "email", "password"],
+                "properties": {
+                  "name": { "type": "string", "example": "Maria Silva" },
+                  "username": { "type": "string", "example": "mariasilva" },
+                  "email": { "type": "string", "format": "email", "example": "maria@email.com" },
+                  "password": { "type": "string", "example": "Senha123", "description": "Mínimo 8 chars, 1 maiúscula, 1 número" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Usuário cadastrado com sucesso.",
+                  "data": {
+                    "user": {
+                      "id": "uuid-aqui",
+                      "name": "Maria Silva",
+                      "username": "mariasilva",
+                      "email": "maria@email.com",
+                      "createdAt": "2024-01-01T00:00:00.000Z",
+                      "updatedAt": "2024-01-01T00:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": { "description": "Username ou e-mail já em uso", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "422": { "description": "Dados inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Realizar login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["login", "password"],
+                "properties": {
+                  "login": { "type": "string", "example": "mariasilva", "description": "Username ou e-mail" },
+                  "password": { "type": "string", "example": "Senha123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Login realizado com sucesso.",
+                  "data": {
+                    "token": "eyJhbGciOiJIUzI1NiJ9...",
+                    "user": { "id": "uuid-aqui", "name": "Maria Silva", "username": "mariasilva", "email": "maria@email.com" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Credenciais inválidas", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "422": { "description": "Campos obrigatórios ausentes", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Obter perfil do usuário autenticado",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Perfil retornado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SuccessResponse" } } } },
+          "401": { "description": "Token ausente, inválido ou expirado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/users/me": {
+      "put": {
+        "tags": ["Users"],
+        "summary": "Atualizar perfil do usuário autenticado",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "username": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Perfil atualizado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SuccessResponse" } } } },
+          "401": { "description": "Não autenticado" },
+          "409": { "description": "Username ou e-mail já em uso" },
+          "422": { "description": "Dados inválidos" }
+        }
+      }
+    },
+    "/books": {
+      "post": {
+        "tags": ["Books"],
+        "summary": "Cadastrar livro",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "author"],
+                "properties": {
+                  "title": { "type": "string", "example": "Dom Casmurro" },
+                  "author": { "type": "string", "example": "Machado de Assis" },
+                  "status": { "type": "string", "enum": ["lido", "lendo", "abandonado", "emprestado", "quero ler"], "example": "lido" },
+                  "rating": { "type": "integer", "minimum": 1, "maximum": 5, "example": 5 },
+                  "isFavorite": { "type": "boolean", "example": true },
+                  "review": { "type": "string", "maxLength": 1000, "example": "Obra-prima da literatura brasileira." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Livro criado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SuccessResponse" } } } },
+          "401": { "description": "Não autenticado" },
+          "409": { "description": "Livro duplicado" },
+          "422": { "description": "Dados inválidos" }
+        }
+      },
+      "get": {
+        "tags": ["Books"],
+        "summary": "Listar livros do usuário",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de livros", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SuccessResponse" } } } },
+          "401": { "description": "Não autenticado" }
+        }
+      }
+    },
+    "/books/{id}": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "Buscar livro por ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Livro encontrado" },
+          "401": { "description": "Não autenticado" },
+          "403": { "description": "Acesso negado" },
+          "404": { "description": "Livro não encontrado" }
+        }
+      },
+      "put": {
+        "tags": ["Books"],
+        "summary": "Atualizar livro",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "author": { "type": "string" },
+                  "status": { "type": "string", "enum": ["lido", "lendo", "abandonado", "emprestado", "quero ler"] },
+                  "rating": { "type": "integer", "minimum": 1, "maximum": 5 },
+                  "isFavorite": { "type": "boolean" },
+                  "review": { "type": "string", "maxLength": 1000 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Livro atualizado" },
+          "401": { "description": "Não autenticado" },
+          "403": { "description": "Acesso negado" },
+          "404": { "description": "Não encontrado" },
+          "409": { "description": "Duplicado" },
+          "422": { "description": "Dados inválidos" }
+        }
+      },
+      "delete": {
+        "tags": ["Books"],
+        "summary": "Remover livro",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Livro removido" },
+          "401": { "description": "Não autenticado" },
+          "403": { "description": "Acesso negado" },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    },
+    "/wishlist": {
+      "post": {
+        "tags": ["Wishlist"],
+        "summary": "Adicionar item à wishlist",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "author"],
+                "properties": {
+                  "title": { "type": "string", "example": "O Senhor dos Anéis" },
+                  "author": { "type": "string", "example": "J.R.R. Tolkien" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Item adicionado" },
+          "401": { "description": "Não autenticado" },
+          "409": { "description": "Item duplicado" },
+          "422": { "description": "Dados inválidos" }
+        }
+      },
+      "get": {
+        "tags": ["Wishlist"],
+        "summary": "Listar wishlist do usuário",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de desejos" },
+          "401": { "description": "Não autenticado" }
+        }
+      }
+    },
+    "/wishlist/{id}": {
+      "delete": {
+        "tags": ["Wishlist"],
+        "summary": "Remover item da wishlist",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Item removido" },
+          "401": { "description": "Não autenticado" },
+          "403": { "description": "Acesso negado" },
+          "404": { "description": "Não encontrado" }
+        }
+      }
+    }
+  }
+}
