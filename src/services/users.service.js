@@ -9,6 +9,18 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 /**
+ * Obtém o perfil do usuário autenticado.
+ */
+async function getMe(userId) {
+  const user = memoryDb.users.find((u) => u.id === userId);
+  if (!user) {
+    throw new NotFoundError('Usuário não encontrado.');
+  }
+
+  return toPublicUser(user);
+}
+
+/**
  * Atualiza os dados do perfil do usuário autenticado.
  * Apenas os campos enviados são atualizados (PATCH semântico via PUT).
  *
@@ -81,4 +93,4 @@ async function updateMe(userId, updates) {
   return toPublicUser(user);
 }
 
-module.exports = { updateMe };
+module.exports = { getMe, updateMe };
