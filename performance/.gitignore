@@ -1,0 +1,10 @@
+# Arquivos gerados por testes
+reports/
+*.html
+*.json
+
+# Cache local
+node_modules/
+.DS_Store
+*.swp
+*.swo

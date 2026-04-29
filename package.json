@@ -7,7 +7,11 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "test": "mocha test/**/*.test.js --exit --timeout 10000",
-    "test:report": "mocha test/**/*.test.js --exit --timeout 10000 --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=relatorio,overwrite=true"
+    "test:report": "mocha test/**/*.test.js --exit --timeout 10000 --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=relatorio,overwrite=true",
+    "perf:smoke": "k6 run performance/load-tests/smoke-test.js",
+    "perf:load": "k6 run performance/load-tests/load-test.js",
+    "perf:stress": "k6 run performance/load-tests/stress-test.js",
+    "perf:soak": "k6 run performance/load-tests/soak-test.js"
   },
   "keywords": [
     "library",
