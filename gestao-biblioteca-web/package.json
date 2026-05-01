@@ -7,9 +7,7 @@
   "keywords": ["biblioteca", "react", "vite", "jwt", "spa"],
   "scripts": {
     "dev": "vite",
-    "start": "vite",
     "build": "vite build",
-    "build:preview": "vite build && vite preview",
     "preview": "vite preview",
     "lint": "eslint ."
   },
