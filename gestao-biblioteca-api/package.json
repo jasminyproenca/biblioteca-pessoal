@@ -4,7 +4,6 @@
   "description": "API REST para gerenciamento de biblioteca pessoal",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "test": "mocha test/**/*.test.js --exit --timeout 10000"
   },
