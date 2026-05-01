@@ -45,7 +45,7 @@ export function createBookFlow(token) {
 export function updateBookFlow(token, bookId) {
   const headers = getAuthHeaders(token);
   
-  const response = makeRequest('PUT', `${BASE_URL}/books/${bookId}`, {
+  const response = makeRequest('PATCH', `${BASE_URL}/books/${bookId}`, {
     status: 'borrowed',
   }, {
     headers,

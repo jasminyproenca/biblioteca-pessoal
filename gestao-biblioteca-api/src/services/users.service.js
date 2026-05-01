@@ -21,8 +21,7 @@ async function getMe(userId) {
 }
 
 /**
- * Atualiza os dados do perfil do usuário autenticado.
- * Apenas os campos enviados são atualizados (PATCH semântico via PUT).
+ * Atualiza parcialmente os dados do perfil do usuário autenticado.
  *
  * Regras:
  *   - name, username, email e password são opcionais na atualização;

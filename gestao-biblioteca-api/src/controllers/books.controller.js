@@ -55,8 +55,8 @@ function getById(req, res, next) {
 }
 
 /**
- * PUT /api/books/:id
- * Atualiza um livro do usuário autenticado.
+ * PATCH /api/books/:id
+ * Atualiza parcialmente um livro do usuário autenticado.
  */
 function update(req, res, next) {
   try {

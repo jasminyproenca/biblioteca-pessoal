@@ -18,8 +18,8 @@ router.get('/', booksController.list);
 // GET /api/books/:id
 router.get('/:id', booksController.getById);
 
-// PUT /api/books/:id
-router.put('/:id', booksController.update);
+// PATCH /api/books/:id
+router.patch('/:id', booksController.update);
 
 // DELETE /api/books/:id
 router.delete('/:id', booksController.remove);

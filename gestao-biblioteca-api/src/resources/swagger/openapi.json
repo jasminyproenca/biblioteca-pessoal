@@ -182,9 +182,9 @@
       }
     },
     "/users/me": {
-      "put": {
+      "patch": {
         "tags": ["Users"],
-        "summary": "Atualizar perfil do usuário autenticado",
+        "summary": "Atualizar parcialmente o perfil do usuário autenticado",
         "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "required": true,
@@ -264,9 +264,9 @@
           "404": { "description": "Livro não encontrado" }
         }
       },
-      "put": {
+      "patch": {
         "tags": ["Books"],
-        "summary": "Atualizar livro",
+        "summary": "Atualizar livro parcialmente",
         "security": [{ "bearerAuth": [] }],
         "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
         "requestBody": {

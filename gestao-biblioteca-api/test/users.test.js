@@ -20,14 +20,14 @@ describe('Users', () => {
     resetMemoryDb();
   });
 
-  describe('PUT /api/users/me', () => {
+  describe('PATCH /api/users/me', () => {
     it('deve atualizar o nome do usuário autenticado', async () => {
       // Arrange
       const token = await registerAndLogin();
 
       // Act
       const res = await request(app)
-        .put('/api/users/me')
+        .patch('/api/users/me')
         .set('Authorization', `Bearer ${token}`)
         .send({ name: 'Novo Nome' });
 
@@ -43,7 +43,7 @@ describe('Users', () => {
 
       // Act — tenta usar o username do primeiro usuário
       const res = await request(app)
-        .put('/api/users/me')
+        .patch('/api/users/me')
         .set('Authorization', `Bearer ${token2}`)
         .send({ username: validUser.username });
 
@@ -53,7 +53,7 @@ describe('Users', () => {
     it('deve retornar 422 ao enviar e-mail inválido', async () => {
       const token = await registerAndLogin();
       const res = await request(app)
-        .put('/api/users/me')
+        .patch('/api/users/me')
         .set('Authorization', `Bearer ${token}`)
         .send({ email: 'invalido' });
 
@@ -62,7 +62,7 @@ describe('Users', () => {
 
     it('deve retornar 401 sem autenticação', async () => {
       const res = await request(app)
-        .put('/api/users/me')
+        .patch('/api/users/me')
         .send({ name: 'Qualquer' });
 
       expect(res.status).to.equal(401);

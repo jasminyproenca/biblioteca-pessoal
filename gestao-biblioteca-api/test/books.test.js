@@ -173,7 +173,7 @@ describe('Books', () => {
     });
   });
 
-  describe('PUT /api/books/:id', () => {
+  describe('PATCH /api/books/:id', () => {
     it('deve atualizar status e rating de um livro', async () => {
       // Arrange
       const token = await registerAndLogin();
@@ -186,7 +186,7 @@ describe('Books', () => {
 
       // Act
       const res = await request(app)
-        .put(`/api/books/${bookId}`)
+        .patch(`/api/books/${bookId}`)
         .set('Authorization', `Bearer ${token}`)
         .send({ status: 'lido', rating: 4, isFavorite: false });
 
@@ -199,7 +199,7 @@ describe('Books', () => {
     it('deve retornar 404 para livro inexistente', async () => {
       const token = await registerAndLogin();
       const res = await request(app)
-        .put('/api/books/id-inexistente')
+        .patch('/api/books/id-inexistente')
         .set('Authorization', `Bearer ${token}`)
         .send({ status: 'lido' });
 
@@ -220,7 +220,7 @@ describe('Books', () => {
 
       // Act — usuário 2 tenta editar livro do usuário 1
       const res = await request(app)
-        .put(`/api/books/${bookId}`)
+        .patch(`/api/books/${bookId}`)
         .set('Authorization', `Bearer ${token2}`)
         .send({ status: 'lendo' });
 
@@ -236,7 +236,7 @@ describe('Books', () => {
 
       const bookId = createRes.body.data.book.id;
       const res = await request(app)
-        .put(`/api/books/${bookId}`)
+        .patch(`/api/books/${bookId}`)
         .set('Authorization', `Bearer ${token}`)
         .send({ status: 'invalido' });
 

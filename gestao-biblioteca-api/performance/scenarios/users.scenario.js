@@ -19,7 +19,7 @@ export function getProfileFlow(token) {
 export function updateProfileFlow(token) {
   const headers = getAuthHeaders(token);
   
-  const response = makeRequest('PUT', `${BASE_URL}/users/me`, {
+  const response = makeRequest('PATCH', `${BASE_URL}/users/me`, {
     name: `Updated User ${Date.now()}`,
   }, {
     headers,

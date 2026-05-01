@@ -21,8 +21,8 @@ async function getMe(req, res, next) {
 }
 
 /**
- * PUT /api/users/me
- * Atualiza o perfil do usuário autenticado.
+ * PATCH /api/users/me
+ * Atualiza parcialmente o perfil do usuário autenticado.
  * Apenas os campos enviados no body serão atualizados.
  */
 async function updateMe(req, res, next) {

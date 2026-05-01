@@ -9,7 +9,7 @@ const router = Router();
 // GET /api/users/me — rota protegida
 router.get('/me', authMiddleware, usersController.getMe);
 
-// PUT /api/users/me — rota protegida
-router.put('/me', authMiddleware, usersController.updateMe);
+// PATCH /api/users/me — rota protegida
+router.patch('/me', authMiddleware, usersController.updateMe);
 
 module.exports = router;

@@ -31,6 +31,9 @@ export function makeRequest(method, url, payload = null, params = {}) {
     case 'PUT':
       response = http.put(url, payload ? JSON.stringify(payload) : null, options);
       break;
+    case 'PATCH':
+      response = http.patch(url, payload ? JSON.stringify(payload) : null, options);
+      break;
     case 'DELETE':
       response = http.del(url, options);
       break;
