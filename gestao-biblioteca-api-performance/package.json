@@ -1,0 +1,11 @@
+{
+  "name": "gestao-biblioteca-api-performance",
+  "version": "1.0.0",
+  "description": "Testes de performance k6 para a API",
+  "scripts": {
+    "test": "k6 run load-tests/smoke-test.js",
+    "test:full": "k6 run load-tests/load-test.js"
+  },
+  "author": "",
+  "license": "MIT"
+}
