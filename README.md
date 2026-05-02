@@ -8,7 +8,8 @@ Monorepo contendo a API e o frontend da aplicação de gestão de biblioteca pes
 gestao-biblioteca/
 ├── gestao-biblioteca-api/             → API REST (Node.js + Express + JWT)
 ├── gestao-biblioteca-web/             → Frontend (React + Vite)
-└── gestao-biblioteca-api-performance/ → Testes de performance (k6)
+├── gestao-biblioteca-testes-web/      → Testes E2E da Web (Cypress)
+└── gestao-biblioteca-api-performance/ → Testes de performance da API (k6)
 ```
 
 ## Como rodar
@@ -27,10 +28,19 @@ npm install
 npm run dev        # http://localhost:5173
 ```
 
-### Testes de Performance
+### Testes de Performance da API
 ```bash
 cd gestao-biblioteca-api-performance
 npm run test       # Para teste básico rápido (smoke)
+```
+
+### Testes E2E (Web)
+Com a API e o Frontend rodando:
+```bash
+cd gestao-biblioteca-testes-web
+npx cypress open   # Abre a interface interativa
+# ou
+npx cypress run    # Roda os testes em modo silencioso no terminal
 ```
 
 ## Documentação
