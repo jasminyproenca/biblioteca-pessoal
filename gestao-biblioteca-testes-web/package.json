@@ -4,12 +4,16 @@
   "description": "Monorepo contendo a API e o frontend da aplicação de gestão de biblioteca pessoal.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "open-test": "npx cypress open",
+    "test": "npx cypress run"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "cypress": "^15.14.2"
+  },
+  "dependencies": {
+    "cypress-mochawesome-reporter": "^4.0.2"
   }
 }
