@@ -30,7 +30,7 @@ npm run dev        # http://localhost:5173
 ### Testes de Performance
 ```bash
 cd gestao-biblioteca-api-performance
-npm run test:smoke # Para teste básico rápido
+npm run test       # Para teste básico rápido (smoke)
 ```
 
 ## Documentação
