@@ -14,11 +14,11 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Captura 401 e redireciona para login
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // Ignorar o redirecionamento se o erro 401 for da própria rota de login
+    if (error.response?.status === 401 && !error.config.url.includes('/auth/login')) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';

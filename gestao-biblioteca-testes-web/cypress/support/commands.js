@@ -1,6 +1,6 @@
 Cypress.Commands.add('login', (
   username = 'testuser',
-  password = 'testpassword',
+  password = 'TestPassword123',
   name = 'Test User',
   email = 'testuser@email.com'
 ) => {
