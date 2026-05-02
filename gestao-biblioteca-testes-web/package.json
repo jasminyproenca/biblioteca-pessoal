@@ -1,0 +1,15 @@
+{
+  "name": "gestao-biblioteca",
+  "version": "1.0.0",
+  "description": "Monorepo contendo a API e o frontend da aplicação de gestão de biblioteca pessoal.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^15.14.2"
+  }
+}
