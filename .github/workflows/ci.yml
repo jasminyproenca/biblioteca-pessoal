@@ -51,35 +51,27 @@ jobs:
         with:
           node-version: 18
 
-      - name: 📦 Instalar dependências da API
-        run: npm ci
-        working-directory: gestao-biblioteca-api
+      - name: 📦 Instalar dependências
+        run: |
+          npm ci --prefix gestao-biblioteca-api
+          npm ci --prefix gestao-biblioteca-web
+          npm ci --prefix gestao-biblioteca-testes-web
 
-      - name: 📦 Instalar dependências do Frontend
-        run: npm ci
-        working-directory: gestao-biblioteca-web
+      - name: 🚀 Subir API e Frontend em background
+        run: |
+          node gestao-biblioteca-api/src/server.js > api.log 2>&1 &
+          cd gestao-biblioteca-web && npx vite --host > ../web.log 2>&1 &
 
-      - name: 📦 Instalar dependências dos Testes Web
-        run: npm ci
-        working-directory: gestao-biblioteca-testes-web
-
-      - name: 🚀 Subir API em background
-        run: node src/server.js &
-        working-directory: gestao-biblioteca-api
-
-      - name: 🖥️ Subir Frontend (Vite) em background
-        run: npm run dev -- --host &
-        working-directory: gestao-biblioteca-web
-
-      - name: ⏳ Aguardar API ficar disponível (porta 3000)
-        run: npx wait-on http://localhost:3000 --timeout 30000
-
-      - name: ⏳ Aguardar Frontend ficar disponível (porta 5173)
-        run: npx wait-on http://localhost:5173 --timeout 30000
+      - name: ⏳ Aguardar serviços ficarem disponíveis
+        run: |
+          npx wait-on http://localhost:3000 --timeout 60000
+          npx wait-on http://localhost:5173 --timeout 60000
 
       - name: 🌐 Executar testes E2E com Cypress
-        run: npm test
-        working-directory: gestao-biblioteca-testes-web
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: gestao-biblioteca-testes-web
+          install: false
 
       - name: 📊 Salvar relatório Mochawesome como artefato
         uses: actions/upload-artifact@v4
