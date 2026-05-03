@@ -1,0 +1,90 @@
+name: 🧪 Testes Automatizados
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  # ─────────────────────────────────────────────
+  # JOB 1 — Testes de API (Mocha + Chai + Supertest)
+  # ─────────────────────────────────────────────
+  api-tests:
+    name: 🔬 Testes de API (Mocha)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+
+      - name: 🟢 Configurar Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: gestao-biblioteca-api/package-lock.json
+
+      - name: 📦 Instalar dependências da API
+        run: npm ci
+        working-directory: gestao-biblioteca-api
+
+      - name: 🧪 Executar testes da API
+        run: npm test
+        working-directory: gestao-biblioteca-api
+
+  # ─────────────────────────────────────────────
+  # JOB 2 — Testes E2E (Cypress)
+  # ─────────────────────────────────────────────
+  e2e-tests:
+    name: 🌐 Testes E2E (Cypress)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+
+      - name: 🟢 Configurar Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: 📦 Instalar dependências da API
+        run: npm ci
+        working-directory: gestao-biblioteca-api
+
+      - name: 📦 Instalar dependências do Frontend
+        run: npm ci
+        working-directory: gestao-biblioteca-web
+
+      - name: 📦 Instalar dependências dos Testes Web
+        run: npm ci
+        working-directory: gestao-biblioteca-testes-web
+
+      - name: 🚀 Subir API em background
+        run: node src/server.js &
+        working-directory: gestao-biblioteca-api
+
+      - name: 🖥️ Subir Frontend (Vite) em background
+        run: npm run dev -- --host &
+        working-directory: gestao-biblioteca-web
+
+      - name: ⏳ Aguardar API ficar disponível (porta 3000)
+        run: npx wait-on http://localhost:3000 --timeout 30000
+
+      - name: ⏳ Aguardar Frontend ficar disponível (porta 5173)
+        run: npx wait-on http://localhost:5173 --timeout 30000
+
+      - name: 🌐 Executar testes E2E com Cypress
+        run: npm test
+        working-directory: gestao-biblioteca-testes-web
+
+      - name: 📊 Salvar relatório Mochawesome como artefato
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-report
+          path: gestao-biblioteca-testes-web/cypress/reports/
+          retention-days: 30
