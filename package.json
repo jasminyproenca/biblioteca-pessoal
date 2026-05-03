@@ -1,0 +1,12 @@
+{
+  "name": "gestao-biblioteca-monorepo",
+  "version": "1.0.0",
+  "description": "Atalhos para facilitar a execução dos subprojetos",
+  "private": true,
+  "scripts": {
+    "start:api": "npm run dev --prefix gestao-biblioteca-api",
+    "start:web": "npm run dev --prefix gestao-biblioteca-web",
+    "test:cypress": "npm run cypress:open --prefix gestao-biblioteca-testes-web",
+    "test:performance": "k6 run gestao-biblioteca-api-performance/load-tests/smoke-test.js"
+  }
+}

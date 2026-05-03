@@ -10,6 +10,8 @@
  * Executar: k6 run performance/load-tests/load-test.js
  */
 
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
+import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 import { group } from 'k6';
 import { defaultThresholds } from '../common/thresholds.js';
 import { registerFlow, loginFlow } from '../scenarios/auth.scenario.js';
@@ -55,4 +57,11 @@ export default function () {
       listWishlistFlow(token);
     }
   });
+}
+
+export function handleSummary(data) {
+  return {
+    "load-test-report.html": htmlReport(data),
+    stdout: textSummary(data, { indent: " ", enableColors: true }),
+  };
 }
